@@ -42,7 +42,13 @@ public class ProdutoDAO{
     }
 
     public void excluir(int id){
-
+        String sql = "DELETE FROM produtos WHERE id_produto = ?";
+        try (PreparedStatement stmt = CONEXAO_DB.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e){
+            System.err.println("Erro ao excluir um produto: " + e.getMessage());
+        }
     }
 
     //excluir todos os produtos do banco
@@ -78,8 +84,24 @@ public class ProdutoDAO{
         return null;
     }
 
-    public void listarTodos(){
-        
+    public List<Produto> listarTodos(){
+        List<Produto> produtosList = new ArrayList<>();
+        String sql = "SELECT * FROM produtos";
+        try (PreparedStatement stmt = CONEXAO_DB.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()){
+                while(rs.next()){
+                    Produto produto = new Produto();
+                    produto.setId(rs.getInt("id_produto"));
+                    produto.setNome(rs.getString("nome_produto"));
+                    produto.setQuantidade(rs.getInt("quantidade"));
+                    produto.setPreco(rs.getDouble("preco"));
+                    produto.setStatus(rs.getString("status"));
+                    produtosList.add(produto);
+                }
+        } catch (SQLException e){
+            System.err.println("Erro ao listar todos os produtos: " + e.getMessage());
+        }
+        return produtosList;
     }
 
 
