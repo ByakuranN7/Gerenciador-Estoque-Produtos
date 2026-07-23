@@ -18,22 +18,35 @@ public class Main{
             produtoDAO.inserir(novoProduto3);
 
             mostrarProdutos(produtoDAO);
+
+            //Teste consulta por ID
+            Produto produtoConsultado = produtoDAO.consultarPorId(1);
+            if (produtoConsultado != null){
+                System.out.println("\nProduto encontrado: " + produtoConsultado.getNome());
+            } else {
+                System.out.println("\nProduto não encontrado na base de dados.");
+            }
+
+
         } catch (SQLException e){
-            System.err.println("Erro ao realizar inserção: " + e.getMessage());
+            System.err.println("Erro geral: " + e.getMessage());
         }
     }
 
 
     public static void mostrarProdutos(ProdutoDAO produtoDAO){
-        List<Produto> produtos = produtoDAO.listarTodos();
-
-        for (Produto produto : produtos) {
-            System.out.println("ID: " + produto.getId());
-            System.out.println("Nome: " + produto.getNome());
-            System.out.println("Quantidade: " + produto.getQuantidade());
-            System.out.println("Preço: R$ " + produto.getPreco());
-            System.out.println("Status: " + produto.getStatus());
-            System.out.println("----------------------------");
+        List<Produto> todosProdutos = produtoDAO.listarTodos();
+        if (todosProdutos.isEmpty()){
+            System.out.println("Nenhum produto encontrado.\n");
+        } else {
+            System.out.println("Lista de produtos:");
+            for (Produto produto : todosProdutos) {
+                System.out.println("ID: " + produto.getId() +
+                        " | Nome: " + produto.getNome() +
+                        " | Quantidade: " + produto.getQuantidade() +
+                        " | Preço: R$ " + produto.getPreco() +
+                        " | Status: " + produto.getStatus());
+            }
         }
     }
 }
