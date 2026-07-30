@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.cell.PropertyValueFactory;
+import java.sql.Connection;
 
 import java.util.List;
 
@@ -31,11 +32,11 @@ public class ProdutoGUI extends Application{
 
         palco.setTitle("Gerenciamento de Estoque de Produtos");
 
-        Vbox vbox = new VBox();
+        VBox vbox = new VBox();
         vbox.setPadding(new Insets(10, 10, 10, 10));
         vbox.setSpacing(10);
 
-        HBox nomeProdutosBox = new HBox();
+        HBox nomeProdutoBox = new HBox();
         nomeProdutoBox.setSpacing(10);
         Label nomeLabel = new Label("Produto:");
         nomeInput = new TextField();
@@ -59,5 +60,17 @@ public class ProdutoGUI extends Application{
         statusComboBox = new ComboBox<>();
         statusComboBox.getItems().addAll("Estoque Normal", "Estoque Baixo");
         statusBox.getChildren().addAll(statusLabel, statusComboBox);
+
+        Button addButton = new Button("Adicionar");
+        addButton.setOnAction(e -> {
+            String preco = precoInput.getText().replace(',', '.'); //Substitui virgula por ponto no preço
+            Produto produto = new Produto(nomeInput.getText(),
+                    Integer.parseInt(quantidadeInput.getText()),
+                    Double.parseDouble(preco),
+                    statusComboBox.getValue());
+            produtoDAO.inserir(produto);
+            todosProdutos.setAll(produtoDAO.listarTodos());
+            //limparCampos(); //******NÃO FIZ ESSE METODO AINDA**********
+        });
     }
 }
